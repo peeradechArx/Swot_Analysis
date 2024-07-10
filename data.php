@@ -94,7 +94,7 @@
 <?php
 include 'db.php';
 
-// เพิ่มข้อมูลพื้นที่การวิเคราะห์
+// Add new area analysis
 if(isset($_POST['add_area'])) {
     $area_name = $_POST['area_name'];
     $creator_name = $_POST['creator_name'];
@@ -104,7 +104,6 @@ if(isset($_POST['add_area'])) {
     $opportunities = $_POST['opportunities'];
     $threats = $_POST['threats'];
     
-    // รวมข้อมูลทรัพยากรท้องถิ่นที่สำคัญ
     $resources = "สถานที่ท่องเที่ยวหรือสถานที่สำคัญในพื้นที่: " . $_POST['tourism_in_area'] . "\n" .
                  "พืชเศรษฐกิจในพื้นที่: " . $_POST['economy_in_area'] . "\n" .
                  "สิ่งที่มีมากในพื้นที่: " . $_POST['abundant_in_area'] . "\n" .
@@ -113,26 +112,46 @@ if(isset($_POST['add_area'])) {
     $reporter_name = $_POST['reporter_name'];
     $report_date = date('Y-m-d');
 
-    $sql = "INSERT INTO areas (area_name, creator_name, target_area_analysis, strengths, weaknesses, opportunities, threats, resources, reporter_name, report_date) 
-            VALUES ('$area_name', '$creator_name', '$target_area_analysis', '$strengths', '$weaknesses', '$opportunities', '$threats', '$resources', '$reporter_name', '$report_date')";
+    // Insert data into areas table
+    $sql_area = "INSERT INTO areas (area_name, creator_name, target_area_analysis, strengths, weaknesses, opportunities, threats, report_date) 
+                 VALUES ('$area_name', '$creator_name', '$target_area_analysis', '$strengths', '$weaknesses', '$opportunities', '$threats', '$report_date')";
 
-    if ($conn->query($sql) === TRUE) {
+    if ($conn->query($sql_area) === TRUE) {
+        $area_id = $conn->insert_id; // Get the last inserted ID
+
+        // Insert data into data table
+        $sql_data = "INSERT INTO data (area_id, reporter_name) VALUES ('$area_id', '$reporter_name')";
+        $conn->query($sql_data);
+
+        // Insert data into data1 table
+        $sql_data1 = "INSERT INTO data1 (area_id, resources) VALUES ('$area_id', '$resources')";
+        $conn->query($sql_data1);
+
         echo "<script>alert('บันทึกข้อมูลเรียบร้อยแล้ว');</script>";
     } else {
-        echo "<script>alert('Error: " . $sql . "<br>" . $conn->error . "');</script>";
+        echo "<script>alert('Error: " . $sql_area . "<br>" . $conn->error . "');</script>";
     }
 }
 
-// ลบข้อมูลพื้นที่การวิเคราะห์
+// Delete area analysis
 if(isset($_POST['delete_area'])) {
     $area_id = $_POST['area_id'];
 
-    $sql = "DELETE FROM areas WHERE area_id=$area_id";
+    // Delete from areas table
+    $sql_delete_area = "DELETE FROM areas WHERE area_id=$area_id";
+    // Delete from data table
+    $sql_delete_data = "DELETE FROM data WHERE area_id=$area_id";
+    $conn->query($sql_delete_data);
 
-    if ($conn->query($sql) === TRUE) {
+    // Delete from data1 table
+    $sql_delete_data1 = "DELETE FROM data1 WHERE area_id=$area_id";
+    $conn->query($sql_delete_data1);
+    
+    if ($conn->query($sql_delete_area) === TRUE) {
+
         echo "<script>alert('ลบข้อมูลเรียบร้อยแล้ว');</script>";
     } else {
-        echo "<script>alert('Error: " . $sql . "<br>" . $conn->error . "');</script>";
+        echo "<script>alert('Error: " . $sql_delete_area . "<br>" . $conn->error . "');</script>";
     }
 }
 ?>
