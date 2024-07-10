@@ -29,9 +29,19 @@
        weaknesses TEXT NOT NULL,
        opportunities TEXT NOT NULL,
        threats TEXT NOT NULL,
-       resources TEXT NOT NULL,
-       reporter_name VARCHAR(100) NOT NULL,
        report_date DATE NOT NULL
+   );
+   CREATE TABLE data (
+    data_id INT AUTO_INCREMENT PRIMARY KEY,
+    area_id INT,
+    reporter_name VARCHAR(255),
+    FOREIGN KEY (area_id) REFERENCES areas(area_id)
+   );
+   CREATE TABLE data1 (
+    data1_id INT AUTO_INCREMENT PRIMARY KEY,
+    area_id INT,
+    resources TEXT,
+    FOREIGN KEY (area_id) REFERENCES areas(area_id)
    );
    ```
 
