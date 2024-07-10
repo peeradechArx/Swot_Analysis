@@ -138,6 +138,8 @@ if(isset($_POST['delete_area'])) {
 ?>
 
 <h2>SWOT Analysis</h2>
+<h2>ผู้สร้างเว็บ พีระเดช โพธิ์หล้า</h2>
+<h2>ชื่อนักศึกษา พีระเดช โพธิ์หล้า 643450082-4</h2>
 <form method="POST">
     <label for="creator_name">ผู้สร้าง:</label>
     <input type="text" id="creator_name" name="creator_name" required><br>
